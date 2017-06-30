@@ -1,9 +1,9 @@
 {
-  "name": "ReactNativeAbHoc",
+  "name": "react-native-ab-hoc",
   "version": "0.0.1",
   "private": true,
+  "main": "index.js",
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "eslint ./src",
     "test": "./node_modules/.bin/jest --coverage",
     "test:auto": "./node_modules/.bin/jest --watch"
@@ -15,6 +15,7 @@
   "devDependencies": {
     "babel-jest": "19.0.0",
     "babel-preset-react-native": "1.9.1",
+    "coveralls": "^2.13.1",
     "enzyme": "^2.9.1",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
