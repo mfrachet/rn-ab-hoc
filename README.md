@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
-Provide a poor obtrusive way to make [A/B Testing](https://en.wikipedia.org/wiki/A/B_testing) by using an `HOC` instead of `components`
+Provide a poor intrusive way to make [A/B Testing](https://en.wikipedia.org/wiki/A/B_testing) by using an `HOC` instead of `components`
 
 This way, extracting the AB implementation consists only of removing / modifying an import statement instead of code refactoring.
 
