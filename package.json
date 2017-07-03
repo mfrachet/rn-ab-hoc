@@ -1,7 +1,6 @@
 {
   "name": "react-native-ab-hoc",
   "version": "0.0.1",
-  "private": true,
   "main": "index.js",
   "scripts": {
     "lint": "eslint ./src",
