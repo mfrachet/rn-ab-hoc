@@ -60,7 +60,7 @@ This will load and store locally one of the two variant randomly (see [randomize
 
 ## Forced variant
 
-You can force the chosen variant using a `variant` props :
+You can force a variant using a `variant` props :
 
 ```javascript
 // app.js
@@ -78,14 +78,14 @@ export default function App() {
 
 # Storage
 
-By default, we're using [`AsyncStorage`](https://facebook.github.io/react-native/docs/asyncstorage.html) using a key that follows the pattern :
+By default, we're using [`AsyncStorage`](https://facebook.github.io/react-native/docs/asyncstorage.html) with a key that follows the pattern :
 
 ```javascript
-abhoc-variant-${experiment}-${variant}
+abhoc-variant-${experiment}
 ```
 
 In the previous case, it would have been :
 
 ```
-abhoc-variant-ListExperiment-ListView
+abhoc-variant-ListExperiment
 ```
