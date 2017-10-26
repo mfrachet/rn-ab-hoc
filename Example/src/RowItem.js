@@ -8,6 +8,10 @@ const styles = {
   },
 };
 
-export default function({ item }) {
-  return <View><Text style={styles.text}>{item.title}</Text></View>
+export default function ({ item }) {
+  return (
+    <View>
+      <Text style={styles.text}>{item.title}</Text>
+    </View>
+  );
 }
