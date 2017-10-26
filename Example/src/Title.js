@@ -18,5 +18,5 @@ export default function ({ value, color }) {
     <View>
       <Text style={style}>{value}</Text>
     </View>
-  )
+  );
 }

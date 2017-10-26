@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, AsyncStorage } from 'react-native';
 
 const LOCAL_STORAGE_KEY = 'abhoc-variant';
@@ -8,7 +9,9 @@ export default (experiment, ...variants) => {
     static findVariant(variant) {
       const chosenVariant = variants.find(v => v.variant === variant);
       if (!chosenVariant) {
-        throw new Error(`The variant named "${variant}" doesn't exist in the current experient "${experiment}"`);
+        throw new Error(
+          `The variant named "${variant}" doesn't exist in the current experient "${experiment}"`,
+        );
       }
       return chosenVariant;
     }
@@ -56,7 +59,7 @@ export default (experiment, ...variants) => {
   }
 
   AbHoc.propTypes = {
-    variant: React.PropTypes.string,
+    variant: PropTypes.string,
   };
 
   AbHoc.defaultProps = {

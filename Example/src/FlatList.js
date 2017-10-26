@@ -5,7 +5,7 @@ import Title from './Title';
 
 export default class CustomFlatList extends React.Component {
   static renderRow({ item }) {
-    return <RowItem item={{ title: item }} />
+    return <RowItem item={{ title: item }} />;
   }
 
   /**
@@ -14,11 +14,8 @@ export default class CustomFlatList extends React.Component {
   render() {
     return (
       <View>
-        <Title value="Variant FlatList" color="#5C6BC0"/>
-        <FlatList
-          data={this.props.data}
-          renderItem={CustomFlatList.renderRow}
-        />
+        <Title value="Variant FlatList" color="#5C6BC0" />
+        <FlatList data={this.props.data} renderItem={CustomFlatList.renderRow} />
       </View>
     );
   }

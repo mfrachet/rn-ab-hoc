@@ -1,15 +1,13 @@
 module.exports = {
-  "extends": "airbnb",
-  "plugins": [
-    "react",
-    "jsx-a11y",
-    "import"
-  ],
-  "rules": {
-    "react/jsx-filename-extension": "off",
-    "jsx-a11y/img-has-alt": "off"
+  extends: 'airbnb',
+  plugins: ['react', 'jsx-a11y', 'import'],
+  rules: {
+    'react/jsx-filename-extension': 'off',
+    'jsx-a11y/img-has-alt': 'off',
+    'jsx-a11y/href-no-hash': 'off',
+    'import/no-extraneous-dependencies': 'off',
   },
-  "env": {
-    "jest": true
-  }
+  env: {
+    jest: true,
+  },
 };

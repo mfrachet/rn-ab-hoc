@@ -15,11 +15,24 @@ describe('ReactNativeAbHoc', () => {
     const getItem = () => Promise.resolve('A');
     jest.setMock('AsyncStorage', { setItem: jest.fn(setItem), getItem: jest.fn(getItem) });
 
-    A = () => (<View><Text>A</Text></View>);
-    B = () => (<View><Text>B</Text></View>);
-    C = () => (<View><Text>C</Text></View>);
+    A = () => (
+      <View>
+        <Text>A</Text>
+      </View>
+    );
+    B = () => (
+      <View>
+        <Text>B</Text>
+      </View>
+    );
+    C = () => (
+      <View>
+        <Text>C</Text>
+      </View>
+    );
 
-    Component = ReactNativeAbHoc('Experiment',
+    Component = ReactNativeAbHoc(
+      'Experiment',
       { variant: 'A', component: A },
       { variant: 'B', component: B },
       { variant: 'C', component: C },
@@ -36,7 +49,9 @@ describe('ReactNativeAbHoc', () => {
     });
 
     it('should have thrown an error if the variant variant doesnt exist', () => {
-      expect(() => shallow(<Component variant="X" />)).toThrow('The variant named "X" doesn\'t exist in the current experient "Experiment');
+      expect(() => shallow(<Component variant="X" />)).toThrow(
+        'The variant named "X" doesn\'t exist in the current experient "Experiment',
+      );
     });
 
     it('should have returned the second component', () => {
