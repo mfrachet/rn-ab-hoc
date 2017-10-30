@@ -1,7 +1,9 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import { View, Text, AsyncStorage } from 'react-native';
+import { shallow } from 'enzyme';
 import ReactNativeAbHoc from './../reactNativeAbHoc';
+
+const getWrapper = (Component, props = {}) => shallow(<Component {...props} />);
 
 /** @test {ReactNativeAbHoc} */
 describe('ReactNativeAbHoc', () => {
@@ -11,10 +13,23 @@ describe('ReactNativeAbHoc', () => {
   let Component;
 
   beforeEach(() => {
-    const setItem = () => Promise.resolve('setItem');
-    const getItem = () => Promise.resolve('A');
-    jest.setMock('AsyncStorage', { setItem: jest.fn(setItem), getItem: jest.fn(getItem) });
+    const asyncMap = {};
+    const getItem = key => Promise.resolve(asyncMap[key]);
+    const setItem = (key, variant) => {
+      asyncMap[key] = variant;
+      Promise.resolve(variant);
+    };
 
+    AsyncStorage.setItem = jest.fn(setItem);
+    AsyncStorage.getItem = jest.fn(getItem);
+  });
+
+  afterEach(() => {
+    AsyncStorage.setItem.mockReset();
+    AsyncStorage.getItem.mockReset();
+  });
+
+  beforeEach(() => {
     A = () => (
       <View>
         <Text>A</Text>
@@ -39,87 +54,69 @@ describe('ReactNativeAbHoc', () => {
     );
   });
 
-  describe('componentWillMount', () => {
-    it('should have called the persistVariant with the A variant', () => {
-      const wrapper = shallow(<Component variant="A" />);
-      const instance = wrapper.instance();
-      instance.persistVariant = jest.fn();
-      instance.componentWillMount();
-      expect(instance.persistVariant).toHaveBeenCalledWith({ variant: 'A', component: A });
+  describe('ReactNativeAbHoc#findVariant', () => {
+    it('should have found the variant', () => {
+      expect(Component.findVariant('A')).toEqual({ variant: 'A', component: A });
     });
 
-    it('should have thrown an error if the variant variant doesnt exist', () => {
-      expect(() => shallow(<Component variant="X" />)).toThrow(
-        'The variant named "X" doesn\'t exist in the current experient "Experiment',
+    it('should have throw an error if the variant is not found', () => {
+      expect(() => Component.findVariant('x')).toThrow(
+        'The variant named "x" doesn\'t exist in the current experiment "Experiment"',
       );
     });
+  });
 
-    it('should have returned the second component', () => {
-      Math.random = jest.fn().mockImplementation(() => 0.4);
-      const wrapper = shallow(<Component />);
-      const instance = wrapper.instance();
-      instance.shouldPersist = jest.fn();
-      instance.componentWillMount();
-      expect(instance.shouldPersist).toHaveBeenCalledWith({ variant: 'B', component: B });
+  describe('ReactNativeAbHoc#randomizeVariant', () => {
+    it('should return component A', () => {
+      Math.random = jest.fn().mockImplementation(() => 0.2);
+      expect(Component.randomizeVariant()).toEqual({ variant: 'A', component: A });
     });
 
-    it('should have returned the first component', () => {
-      Math.random = jest.fn().mockImplementation(() => 0.1);
-      const wrapper = shallow(<Component />);
-      const instance = wrapper.instance();
-      instance.shouldPersist = jest.fn();
-      instance.componentWillMount();
-      expect(instance.shouldPersist).toHaveBeenCalledWith({ variant: 'A', component: A });
+    it('should return component B', () => {
+      Math.random = jest.fn().mockImplementation(() => 0.5);
+      expect(Component.randomizeVariant()).toEqual({ variant: 'B', component: B });
     });
 
-    it('should have returned the last component', () => {
-      Math.random = jest.fn().mockImplementation(() => 0.9);
-      const wrapper = shallow(<Component />);
-      const instance = wrapper.instance();
-      instance.shouldPersist = jest.fn();
-      instance.componentWillMount();
-      expect(instance.shouldPersist).toHaveBeenCalledWith({ variant: 'C', component: C });
+    it('should return component C', () => {
+      Math.random = jest.fn().mockImplementation(() => 0.8);
+      expect(Component.randomizeVariant()).toEqual({ variant: 'C', component: C });
     });
   });
 
-  describe('persistVariant', () => {
-    it('should have called the AsyncStorage setItem if the variant is forced ', async () => {
-      const instance = shallow(<Component variant="B" />).instance();
-      // Reset the mock called in shallow
-      AsyncStorage.setItem.mockClear();
-      await instance.persistVariant({ variant: 'B', component: B });
+  describe('ReactNativeAbHoc#lifecycle', () => {
+    it('should render a forced component', async () => {
+      const wrapper = await getWrapper(Component, { variant: 'B' });
       expect(AsyncStorage.setItem).toHaveBeenCalledWith('abhoc-variant-Experiment', 'B');
+      expect(wrapper.state()).toEqual({ variant: 'B', component: B });
+      expect(wrapper.find(View).prop('variant')).toEqual('B');
     });
 
-    it('should have called the component setState with "variant" and "B" ', async () => {
-      const instance = shallow(<Component variant="B" />).instance();
-      // Reset the mock called in shallow
-      AsyncStorage.setItem.mockClear();
-      instance.setState = jest.fn();
-      await instance.persistVariant({ variant: 'B', component: B });
-      expect(instance.setState).toHaveBeenCalledWith({ variant: 'B', component: B });
-    });
-  });
-
-  describe('shouldPersist', () => {
-    it('shouldnt have called the persist method if something as been obtained from the storage ', async () => {
-      Math.random = jest.fn().mockImplementation(() => 0.1);
-      AsyncStorage.setItem.mockClear();
-      const instance = shallow(<Component />).instance();
-      instance.persistVariant = jest.fn();
-      await instance.shouldPersist({ variant: 'B', component: B });
-      expect(instance.persistVariant).not.toHaveBeenCalled();
+    it('should render a random component', async (done) => {
+      Math.random = jest.fn().mockImplementation(() => 0.8);
+      const wrapper = await getWrapper(Component, { simpleProps: 'test' });
+      expect(AsyncStorage.getItem).toHaveBeenCalledWith('abhoc-variant-Experiment');
+      expect(AsyncStorage.setItem).toHaveBeenCalledWith('abhoc-variant-Experiment', 'C');
+      expect(wrapper.find(View).prop('simpleProps')).toEqual('test');
+      setTimeout(() => {
+        expect(wrapper.state()).toEqual({ variant: 'C', component: C });
+        done();
+      }, 0);
     });
 
-    it('should have called the persist method if nothing in the storage ', async () => {
-      Math.random = jest.fn().mockImplementation(() => 0.1);
-      AsyncStorage.setItem.mockClear();
-      const getItem = () => Promise.resolve(null);
-      AsyncStorage.getItem = getItem;
-      const instance = shallow(<Component />).instance();
-      instance.persistVariant = jest.fn();
-      await instance.shouldPersist({ variant: 'B', component: B });
-      expect(instance.persistVariant).toHaveBeenCalledWith({ variant: 'B', component: B });
+    it('should render a random (existing) component', async (done) => {
+      Math.random = jest.fn().mockImplementation(() => 0.8);
+
+      AsyncStorage.setItem('abhoc-variant-Experiment', 'C');
+      AsyncStorage.setItem.mockReset();
+
+      const wrapper = await getWrapper(Component, { simpleProps: 'test' });
+      expect(AsyncStorage.getItem).toHaveBeenCalledWith('abhoc-variant-Experiment');
+      expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+      expect(wrapper.find(View).prop('simpleProps')).toEqual('test');
+      setTimeout(() => {
+        expect(wrapper.state()).toEqual({ variant: 'C', component: C });
+        done();
+      }, 0);
     });
   });
 });

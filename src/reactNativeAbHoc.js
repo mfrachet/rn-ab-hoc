@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, AsyncStorage } from 'react-native';
 
-const LOCAL_STORAGE_KEY = 'abhoc-variant';
+export const LOCAL_STORAGE_KEY = 'abhoc-variant';
 
 export default (experiment, ...variants) => {
   class AbHoc extends React.Component {
@@ -10,7 +10,7 @@ export default (experiment, ...variants) => {
       const chosenVariant = variants.find(v => v.variant === variant);
       if (!chosenVariant) {
         throw new Error(
-          `The variant named "${variant}" doesn't exist in the current experient "${experiment}"`,
+          `The variant named "${variant}" doesn't exist in the current experiment "${experiment}"`,
         );
       }
       return chosenVariant;
@@ -27,7 +27,7 @@ export default (experiment, ...variants) => {
       this.state = { variant: null, component: View };
     }
 
-    componentWillMount() {
+    async componentDidMount() {
       const { variant } = this.props;
       if (variant) {
         const chosenVariant = AbHoc.findVariant(variant);
@@ -44,6 +44,7 @@ export default (experiment, ...variants) => {
 
     async shouldPersist({ variant, component }) {
       const localVariantKey = await AsyncStorage.getItem(`${LOCAL_STORAGE_KEY}-${experiment}`);
+
       if (!localVariantKey) {
         return this.persistVariant({ variant, component });
       }

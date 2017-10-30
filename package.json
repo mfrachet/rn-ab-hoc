@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "format":
-      "prettier-eslint --write \"src/**/*.js\" && prettier-eslint --write \"Example/src/**/*.js\"",
+    "format": "prettier-eslint --write \"src/**/*.js\" && prettier-eslint --write \"Example/src/**/*.js\"",
     "lint": "eslint ./src",
     "test": "./node_modules/.bin/jest --coverage --no-cache",
     "test:auto": "./node_modules/.bin/jest --watch"
@@ -29,11 +28,16 @@
     "react": "16.0.0-beta.5",
     "react-dom": "16.0.0-beta.5",
     "react-native": "0.49.3",
+    "react-native-mock-render": "^0.0.13",
     "react-test-renderer": "16.0.0-beta.5"
   },
   "jest": {
     "preset": "react-native",
-    "setupFiles": ["./setup/test.setup.js"],
-    "modulePathIgnorePatterns": ["<rootDir>/Example/"]
+    "setupFiles": [
+      "./setup/test.setup.js"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/Example/"
+    ]
   }
 }
