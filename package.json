@@ -1,7 +1,17 @@
 {
-  "name": "react-native-ab-hoc",
+  "name": "rn-ab-hoc",
   "version": "0.0.1",
+  "private": false,
   "main": "index.js",
+  "homepage": "mfrachet/rn-ab-hoc",
+  "repository": {
+    "type": "git",
+    "url": "mfrachet/rn-ab-hoc"
+  },
+  "description":
+    "Poor intrusive way to make A/B Testing by using an HoC instead of components",
+  "keywords": ["react-native", "ios", "android", "expo"],
+  "author": "Marvin FRACHET <marvin.frachet@gmail.com> (@mfrachet)",
   "scripts": {
     "format":
       "prettier-eslint --write \"src/**/*.js\" && prettier-eslint --write \"Example/src/**/*.js\"",

@@ -1,4 +1,4 @@
-import AbHoc from 'react-native-ab-hoc';
+import AbHoc from 'rn-ab-hoc';
 import FlatList from './FlatList';
 import ListView from './ListView';
 

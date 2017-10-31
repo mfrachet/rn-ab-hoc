@@ -9,8 +9,7 @@
   "dependencies": {
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
-    "react-native-ab-hoc":
-      "git+https://git@github.com/mfrachet/react-native-ab-hoc.git#7c6d7aaaae5b370d17f8e0f5efb28fcee04fcbb4"
+    "rn-ab-hoc": "git+https://git@github.com/mfrachet/rn-ab-hoc.git"
   },
   "devDependencies": {
     "babel-jest": "20.0.3",
