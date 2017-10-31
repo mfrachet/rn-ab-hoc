@@ -3,51 +3,58 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
-Provide a poor intrusive way to make [A/B Testing](https://en.wikipedia.org/wiki/A/B_testing) by using an `HOC` instead of `components`
-
-This way, extracting the AB implementation consists only of removing / modifying an import statement instead of code refactoring.
+Poor intrusive way to make A/B Testing by using an `HoC` instead of components.
 
 ---
 <p align="center">
-<img src="https://img4.hostingpics.net/pics/219640VariantFlatList.gif"/>
-<img src="https://img4.hostingpics.net/pics/966777VariantListView.gif"/>
+<img height="300" src="https://img4.hostingpics.net/pics/219640VariantFlatList.gif"/>
+<img height="300" src="https://img4.hostingpics.net/pics/966777VariantListView.gif"/>
 </p>
 
-# Installation
+---
 
-```
-npm install --save react-native-ab-hoc
-```
+
+
 
 # Usage
 
-Now, let's imagine that you have two lists :
+### Installation
 
-- One built with a `FlatList` inside of `flatList.js`
-- One built with a `ListView` inside of `listView.js`
+```
+$ npm install --save react-native-ab-hoc
+```
 
-Let's create an AbTestFile :
+### Component
+
 
 ```javascript
-// list.ab-test.js
-import AbHoc from 'react-native-ab-hoc';
+/* list.js */
+
+import abConnect from 'react-native-ab-hoc';
 import FlatList from './flatList.js';
 import ListView rom './listView.js';
+import OtherList rom './otherList.js';
 
-export default AbHoc('ListExperiment',
+export default abConnect('ListExperiment',
  { variant: 'FlatList', component: FlatList },
- { variant: 'ListView', component: ListView }
+ { variant: 'ListView', component: ListView },
+ { variant: 'OtherList', component: OtherList }
 );
 ```
 
-## Random variant
+The previous code defines :
 
-Inside of your app, let's do something like :
+- An experiment name
+- A list of different variants with their names and associated components
+
+### Using a random variant
+
 
 ```javascript
-// app.js
+/* app.js */
+
 import React from 'react';
-import List from './list.ab-test';
+import List from './list';
 
 export default function App() {
     return (
@@ -56,29 +63,51 @@ export default function App() {
 }
 ```
 
-This will load and store locally one of the two variant randomly (see [randomize function](https://github.com/mfrachet/react-native-ab-hoc/blob/master/src/reactNativeAbHoc.js#L16))
+This will load one of the three previous components (variants) defined using a [randomize function](https://github.com/mfrachet/react-native-ab-hoc/blob/master/src/reactNativeAbHoc.js#L16)
 
-## Forced variant
-
-You can force a variant using a `variant` props :
+### Forcing a variant
 
 ```javascript
-// app.js
+/* app.js */
+
 import React from 'react';
-import List from './list.ab-test';
+import List from './list';
 
 export default function App() {
     return (
-      <List variant="FlatList"/>
+      <List variant="FlatList" />
     );
 }
 ```
 
+This will force a specific variant (maybe sent by your backend) to be used inside the app.
+
 *Note that the forced variant takes over the random one. If you set a variant by forcing it, the previous random one will be erased and replaced by the forced one. Inverse is not true.*
 
-# Storage
+### Which variant am I using ?
 
-By default, we're using [`AsyncStorage`](https://facebook.github.io/react-native/docs/asyncstorage.html) with a key that follows the pattern :
+```javascript
+/* app.js */
+
+import React from 'react';
+import List from './list';
+
+export default function App() {
+    return (
+      <List
+        variant="FlatList"
+        onVariantSelect={(variant) => console.log(variant)}
+      />
+    );
+}
+```
+
+This will print `FlatList`. It also work with random variants.
+
+
+### Storage
+
+The default storage system is  [`AsyncStorage`](https://facebook.github.io/react-native/docs/asyncstorage.html) with a key that follows the pattern :
 
 ```javascript
 abhoc-variant-${experiment}
