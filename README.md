@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/mfrachet/react-native-ab-hoc.svg?branch=master)](https://travis-ci.org/mfrachet/react-native-ab-hoc)
-[![Coverage Status](https://coveralls.io/repos/github/mfrachet/react-native-ab-hoc/badge.svg?branch=master)](https://coveralls.io/github/mfrachet/react-native-ab-hoc?branch=master)
+[![Build Status](https://travis-ci.org/mfrachet/rn-ab-hoc.svg?branch=master)](https://travis-ci.org/mfrachet/rn-ab-hoc)
+[![Coverage Status](https://coveralls.io/repos/github/mfrachet/rn-ab-hoc/badge.svg?branch=master)](https://coveralls.io/github/mfrachet/rn-ab-hoc?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
@@ -21,7 +21,7 @@ Poor intrusive way to make A/B Testing by using an `HoC` instead of components.
 ### Installation
 
 ```
-$ npm install --save react-native-ab-hoc
+$ npm install --save rn-ab-hoc
 ```
 
 ### Component
@@ -30,7 +30,7 @@ $ npm install --save react-native-ab-hoc
 ```javascript
 /* list.js */
 
-import abConnect from 'react-native-ab-hoc';
+import abConnect from 'rn-ab-hoc';
 import FlatList from './flatList.js';
 import ListView rom './listView.js';
 import OtherList rom './otherList.js';
@@ -63,7 +63,7 @@ export default function App() {
 }
 ```
 
-This will load one of the three previous components (variants) defined using a [randomize function](https://github.com/mfrachet/react-native-ab-hoc/blob/master/src/reactNativeAbHoc.js#L16)
+This will load one of the three previous components (variants) defined using a [randomize function](https://github.com/mfrachet/rn-ab-hoc/blob/master/src/reactNativeAbHoc.js#L16)
 
 ### Forcing a variant
 
