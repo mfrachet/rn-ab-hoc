@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, AsyncStorage } from 'react-native';
 import { shallow } from 'enzyme';
-import ReactNativeAbHoc from './../reactNativeAbHoc';
+import ReactNativeAbHoc, { noop } from './../reactNativeAbHoc';
 
 const getWrapper = (Component, props = {}) => shallow(<Component {...props} />);
 
@@ -11,6 +11,7 @@ describe('ReactNativeAbHoc', () => {
   let B;
   let C;
   let Component;
+  let spyOnSelectVariant;
 
   beforeEach(() => {
     const asyncMap = {};
@@ -30,6 +31,7 @@ describe('ReactNativeAbHoc', () => {
   });
 
   beforeEach(() => {
+    spyOnSelectVariant = jest.fn();
     A = () => (
       <View>
         <Text>A</Text>
@@ -84,20 +86,30 @@ describe('ReactNativeAbHoc', () => {
   });
 
   describe('ReactNativeAbHoc#lifecycle', () => {
+    it('should return null on noop default function', () => expect(noop()).toEqual(null));
+
     it('should render a forced component', async () => {
-      const wrapper = await getWrapper(Component, { variant: 'B' });
+      const wrapper = await getWrapper(Component, {
+        variant: 'B',
+        onVariantSelect: spyOnSelectVariant,
+      });
       expect(AsyncStorage.setItem).toHaveBeenCalledWith('abhoc-variant-Experiment', 'B');
+      expect(spyOnSelectVariant).toHaveBeenCalledWith('B');
       expect(wrapper.state()).toEqual({ variant: 'B', component: B });
       expect(wrapper.find(View).prop('variant')).toEqual('B');
     });
 
     it('should render a random component', async (done) => {
       Math.random = jest.fn().mockImplementation(() => 0.8);
-      const wrapper = await getWrapper(Component, { simpleProps: 'test' });
+      const wrapper = await getWrapper(Component, {
+        simpleProps: 'test',
+        onVariantSelect: spyOnSelectVariant,
+      });
       expect(AsyncStorage.getItem).toHaveBeenCalledWith('abhoc-variant-Experiment');
       expect(AsyncStorage.setItem).toHaveBeenCalledWith('abhoc-variant-Experiment', 'C');
       expect(wrapper.find(View).prop('simpleProps')).toEqual('test');
       setTimeout(() => {
+        expect(spyOnSelectVariant).toHaveBeenCalledWith('C');
         expect(wrapper.state()).toEqual({ variant: 'C', component: C });
         done();
       }, 0);
@@ -105,15 +117,17 @@ describe('ReactNativeAbHoc', () => {
 
     it('should render a random (existing) component', async (done) => {
       Math.random = jest.fn().mockImplementation(() => 0.8);
-
       AsyncStorage.setItem('abhoc-variant-Experiment', 'C');
       AsyncStorage.setItem.mockReset();
-
-      const wrapper = await getWrapper(Component, { simpleProps: 'test' });
+      const wrapper = await getWrapper(Component, {
+        simpleProps: 'test',
+        onVariantSelect: spyOnSelectVariant,
+      });
       expect(AsyncStorage.getItem).toHaveBeenCalledWith('abhoc-variant-Experiment');
       expect(AsyncStorage.setItem).not.toHaveBeenCalled();
       expect(wrapper.find(View).prop('simpleProps')).toEqual('test');
       setTimeout(() => {
+        expect(spyOnSelectVariant).toHaveBeenCalledWith('C');
         expect(wrapper.state()).toEqual({ variant: 'C', component: C });
         done();
       }, 0);

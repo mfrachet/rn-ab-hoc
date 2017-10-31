@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, AsyncStorage } from 'react-native';
 
 export const LOCAL_STORAGE_KEY = 'abhoc-variant';
+export const noop = () => null;
 
 export default (experiment, ...variants) => {
   class AbHoc extends React.Component {
@@ -39,6 +40,7 @@ export default (experiment, ...variants) => {
 
     async persistVariant({ variant, component }) {
       await AsyncStorage.setItem(`${LOCAL_STORAGE_KEY}-${experiment}`, variant);
+      this.props.onVariantSelect(variant);
       return this.setState({ variant, component });
     }
 
@@ -49,6 +51,7 @@ export default (experiment, ...variants) => {
         return this.persistVariant({ variant, component });
       }
       const localVariant = AbHoc.findVariant(localVariantKey);
+      this.props.onVariantSelect(localVariant.variant);
       return this.setState({ ...localVariant });
     }
 
@@ -61,10 +64,12 @@ export default (experiment, ...variants) => {
 
   AbHoc.propTypes = {
     variant: PropTypes.string,
+    onVariantSelect: PropTypes.func,
   };
 
   AbHoc.defaultProps = {
     variant: null,
+    onVariantSelect: noop,
   };
 
   return AbHoc;
